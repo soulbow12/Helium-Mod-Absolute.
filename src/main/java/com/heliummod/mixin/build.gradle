@@ -1,0 +1,71 @@
+plugins {
+    id 'fabric-loom' version '1.6-SNAPSHOT'
+    id 'maven-publish'
+    id 'java'
+}
+
+version = '1.0.0'
+group = 'com.heliummod'
+archivesBaseName = 'helium'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.fabricmc.net/' }
+    maven { url 'https://api.modrinth.com/maven' }
+    maven { url 'https://jitpack.io' }
+}
+
+// ─── Minecraft / Fabric versions ────────────────────────────────────────────
+def minecraftVersion  = '1.20.1'
+def yarnMappings      = '1.20.1+build.10'
+def loaderVersion     = '0.15.11'
+def fabricApiVersion  = '0.92.0+1.20.1'
+
+dependencies {
+    // ── Core Fabric toolchain ────────────────────────────────────────────────
+    minecraft           "com.mojang:minecraft:${minecraftVersion}"
+    mappings            "net.fabricmc:yarn:${yarnMappings}:v2"
+    modImplementation   "net.fabricmc:fabric-loader:${loaderVersion}"
+    modImplementation   "net.fabricmc.fabric-api:fabric-api:${fabricApiVersion}"
+
+    // ── Mixin annotation processor ───────────────────────────────────────────
+    annotationProcessor 'net.fabricmc:sponge-mixin:0.13.2+mixin.0.8.5'
+    implementation      'net.fabricmc:sponge-mixin:0.13.2+mixin.0.8.5'
+
+    // ── FastUtil — compact, fast primitive collections ───────────────────────
+    implementation 'it.unimi.dsi:fastutil:8.5.12'
+    include        'it.unimi.dsi:fastutil:8.5.12'
+
+    // ── Caffeine — high-performance cache (replaces Guava cache) ─────────────
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
+    include        'com.github.ben-manes.caffeine:caffeine:3.1.8'
+
+    // ── JCTools — lock-free concurrent queues ────────────────────────────────
+    implementation 'org.jctools:jctools-core:4.0.2'
+    include        'org.jctools:jctools-core:4.0.2'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding          = 'UTF-8'
+    options.release           = 17
+    // Enable all optimisation flags available to javac
+    options.compilerArgs     += ['-O', '-g:none', '--enable-preview']
+}
+
+processResources {
+    inputs.property 'version', project.version
+
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+
+jar {
+    from('LICENSE') { rename { "${it}_${archivesBaseName}" } }
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "helium",
+  "version": "${version}",
+  "name": "Helium",
+  "description": "Ultra-low-end Minecraft optimizer: 90% RAM reduction, MDI render pipeline, lock-free caches.",
+  "authors": ["YourNameHere"],
+  "contact": {
+    "sources": "https://github.com/yourname/helium"
+  },
+  "license": "MIT",
+  "icon": "assets/helium/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main":   ["com.heliummod.HeliumMod"],
+    "client": ["com.heliummod.HeliumClientMod"]
+  },
+  "mixins": [
+    "helium.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft":    "~1.20.1",
+    "java":         ">=17",
+    "fabric-api":   "*"
+  }
+}
